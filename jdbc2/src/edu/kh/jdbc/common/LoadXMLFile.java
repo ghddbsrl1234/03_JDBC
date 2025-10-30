@@ -19,7 +19,7 @@ public class LoadXMLFile {
 			Properties prop = new Properties();
 
 			// driver.xml 파일을 읽기위한 InputStream 객체 생성
-			fis = new FileInputStream("driver.xml.xml");
+			fis = new FileInputStream("driver.xml");
 
 			// 연결된 driver.xml 파일에 있는
 			// 내용을 모두 읽어와

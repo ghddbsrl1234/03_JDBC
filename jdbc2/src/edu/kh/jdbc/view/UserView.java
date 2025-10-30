@@ -5,11 +5,11 @@ import java.util.Scanner;
 
 import edu.kh.jdbc.model.service.UserService;
 
-// View : 사용자와 직접 상호작용하는 화면(UI)를 담당.
+// View : 사용자와 직접 상호작용하는 화면(UI)를 담당,
 // (사용자에게) 입력을 받고 결과를 출력하는 역할
 public class UserView {
-
-	// 필드 
+	
+	// 필드
 	private UserService service = new UserService();
 	private Scanner sc = new Scanner(System.in);
 	
@@ -33,11 +33,11 @@ public class UserView {
 				System.out.println("7. User 등록(아이디 중복 검사)");
 				System.out.println("8. 여러 User 등록하기");
 				System.out.println("0. 프로그램 종료");
-				
+
 				System.out.print("메뉴 선택 : ");
 				input = sc.nextInt();
 				sc.nextLine(); // 버퍼에 남은 개행문자 제거
-				
+
 				switch (input) {
 				case 1: insertUser(); break;
 				case 2: selectAll(); break;
@@ -50,12 +50,13 @@ public class UserView {
 				case 0: System.out.println("\n[프로그램 종료]\n"); break;
 				default: System.out.println("\n[메뉴 번호만 입력하세요]\n");
 				}
+
 				System.out.println("\n-------------------------------------\n");
 				
 				
 			} catch (InputMismatchException e) {
 				// Scanner 를 이용한 입력 시 자료형이 잘못된 경우
-				System.out.println("\n***잘못 입력하셨습니다***\n");
+				System.out.println("\n***잘못 입력 하셨습니다***\n");
 				
 				input = -1; // 잘못 입력해서 while문 멈추는걸 방지
 				sc.nextLine(); // 입력 버퍼에 남아있는 잘못된 문자 제거
@@ -63,10 +64,10 @@ public class UserView {
 			} catch (Exception e) {
 				// 발생되는 예외를 모두 해당 catch 구문으로 모아서 처리
 				e.printStackTrace();
-				
 			}
 			
-		} while (input != 0);
+		} while(input != 0);
+		
 		
 	}
 
@@ -109,13 +110,13 @@ public class UserView {
 		// TODO Auto-generated method stub
 		
 	}
-
 	
 	
 	
 	
 	
 	
-
+	
+		
 
 }
