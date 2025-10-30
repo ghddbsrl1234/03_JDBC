@@ -1,8 +1,10 @@
 package edu.kh.jdbc.view;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
+import edu.kh.jdbc.model.dto.User;
 import edu.kh.jdbc.model.service.UserService;
 
 // View : 사용자와 직접 상호작용하는 화면(UI)를 담당,
@@ -81,33 +83,188 @@ public class UserView {
 		
 	}
 
-	private void updateName() {
-		// TODO Auto-generated method stub
+	/** 6. ID, PW가 일치하는 회원이 있을 경우 이름 수정
+	 * 
+	 */
+	private void updateName() throws Exception {
+		
+		System.out.println("\n===== 이름 수정 =====\n");
+
+	    System.out.print("아이디 입력: ");
+	    String userId = sc.next();
+
+	    System.out.print("비밀번호 입력: ");
+	    String userPw = sc.next();
+
+	    System.out.print("수정할 이름 입력: ");
+	    String userName = sc.next();
+
+	    User user = new User();
+	    user.setUserId(userId);
+	    user.setUserPw(userPw);
+	    user.setUserName(userName);
+
+	    int result = service.updateName(user);
+
+	    if(result > 0) {
+	    
+	    	System.out.println("\n[이름이 성공적으로 수정되었습니다]\n");
+	    	
+	    } else {
+	    	
+	        System.out.println("\n[아이디 또는 비밀번호가 일치하는 회원이 없습니다]\n");
+	    }
+	}
+		
+	
+
+	/** 5. USER_NO를 입력받아 일치하는 User 삭제
+	 *  * DNL 이다!!
+	 *  
+	 * -- 삭제 성공했을 때 : 삭제 성공 출력
+	 * == 삭제 실패했을 때 : 사용자 번호가 일치하는 User가 존재하지 않음
+	 * 
+	 */
+	private void deleteUser() throws Exception {
+		   System.out.print("삭제할 USER_NO를 입력하세요: ");
+		    int userNo = sc.nextInt();
+		    sc.nextLine(); 
+
+		    int result = service.deleteUser(userNo);
+
+		    if (result > 0) {
+		    	
+		        System.out.println("삭제 성공!");
+		        
+		    } else {
+		    	
+		        System.out.println("사용자 번호가 일치하는 User가 존재하지 않습니다.");
+		    }
 		
 	}
 
-	private void deleteUser() {
-		// TODO Auto-generated method stub
+	/** 4.  USER_NO를 입력 받아 일치하는 User 조회
+	 * * 딱 1행만 조회되거나 or 일치하는 것 못찾았거나
+	 * 
+	 * -- 찾았을 때 : User 객체 출력
+	 * -- 없을 때	: User_No가 일치하는 회원 없음
+	 */
+	private void selectUser() throws Exception{
+		
+		   System.out.print("조회할 USER_NO를 입력하세요: ");
+		    int input = sc.nextInt();
+		    sc.nextLine(); 
+
+		    User user = service.selectUser(input);
+
+		    if (user == null) {
+
+		        System.out.println("해당 USER_NO의 회원이 없습니다.");
+		    } else {
+		        System.out.println("\n===== 조회 결과 =====");
+		        System.out.println("번호: " + user.getUserNo());
+		        System.out.println("아이디: " + user.getUserId());
+		        System.out.println("비밀번호: " + user.getUserPw());
+		        System.out.println("이름: " + user.getUserName());
+		        System.out.println("가입일: " + user.getEnrollDate());
+		    }
+		
 		
 	}
 
-	private void selectUser() {
-		// TODO Auto-generated method stub
+	/** 3. User 중 이름에 검색어가 포함된 회원 조회
+	 * 검색어 입력 : 유
+	 */
+	private void selectName() throws Exception{
+	
+		System.out.print("\n***3. User 중 이름에 검색어가 포함된 회원 조회***\n");
+		
+		System.out.print("검색어 입력 : ");
+		String keyword = sc.next();
+		 
+		
+		List<User> searchList = service.selectName(keyword);
+		 
+		if (searchList.isEmpty()) {
+            System.out.println("검색 결과가 없습니다.");
+            
+        } else {
+            System.out.println("\n===== 검색 결과 =====");
+            
+            for (User user : searchList) {
+
+                System.out.println(user);
+            }
+        }
+   
+
 		
 	}
 
-	private void selectName() {
-		// TODO Auto-generated method stub
+	/** 2. User 전체 조회 관련 View (SELECT)
+	 * 
+	 */
+	private void selectAll() throws Exception{
+		
+		System.out.print("\n====2. User 전체 조회====\n");
+		
+		// 서비스 호출(SELECT) 후 결과 반환(List<User>)받기
+		List<User> userList = service.selectAll();
+		
+		// 조회 겨과 없을 경우
+		if(userList.isEmpty() ) {
+			System.out.println("\n***조회 결과가 없습니다***\n");
+			return;
+		}
+		
+		// 조회 결과가 있을 경우
+		// userList에 있는 모든 User 객체 출력
+		// 향상된 for문 이용!
+		
+		for( User user : userList) {
+			System.out.println(user);
+		}
+		
 		
 	}
 
-	private void selectAll() {
-		// TODO Auto-generated method stub
+	/** 1. User 등록 관련된 View 
+	 * 
+	 */
+	private void insertUser() throws Exception{
 		
-	}
+		System.out.println("\n====1, User 등록====\n");
+		
+		System.out.print("ID : ");
+		String userId = sc.next();
 
-	private void insertUser() {
-		// TODO Auto-generated method stub
+		System.out.print("PW : ");
+		String userPw = sc.next();
+		
+		System.out.print("Name : ");
+		String userName = sc.next();
+		
+		// 입력받은 값 3개를 한번에 묶어서 전달할 수 있도록
+		// User DTO 객체를 생성한 후 필드에 값을 세팅
+		User user = new User();
+		
+		// setter 이용
+		user.setUserId(userId);
+		user.setUserPw(userPw);
+		user.setUserName(userName);
+		
+		// 서비스 호출(INSERT) 후 결과 반환(int, 결과 행의 갯수) 받기
+		int result = service.insertUser(user);
+		// service 객체(UserService)에 있는 insertUser() 라는 이름의 메서드를 호출하겠다
+		
+		// 반환된 결과에 따라 출력할 내용 선택
+		if(result > 0) {
+			System.out.println("\n" + userId + " 사용자가 등록되었습니다.\n");
+			
+			
+		} else {
+			System.out.println("\n***등록 실패***\n" );
+		}
 		
 	}
 	
