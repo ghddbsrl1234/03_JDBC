@@ -83,65 +83,46 @@ public class UserService {
 	}
 
 	/**
-	 * 4.
-	 * 
+	 * 4. USER_NO 를 입력받아 일치하는 USER 조회 서비스
 	 * @param userNo
 	 * @return
 	 */
 	public User selectUser(int input) throws Exception {
 
-		Connection conn = null;
-		User user = null;
+		Connection conn = JDBCTemplate.getConnection();
+		
+		User user = dao.selectUser(conn, input);
 
-		try {
-			conn = JDBCTemplate.getConnection();
-			user = dao.selectUser(conn, input);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-		} finally {
-
-			JDBCTemplate.close(conn);
-		}
+		JDBCTemplate.close(conn);
 
 		return user;
 	}
 
-	/**
-	 * 5.
-	 * 
+	/** 5. USER_NO를 입력받아 일치하는 User 삭제 서비스
 	 * @param userNo
 	 * @return
 	 */
-	public int deleteUser(int userNo) throws Exception {
+	public int deleteUser(int input) throws Exception {
 
 		Connection conn = null;
 		int result = 0;
 
 		try {
 			conn = JDBCTemplate.getConnection();
-			result = dao.deleteUser(conn, userNo);
+			result = dao.deleteUser(conn, input);
 
 			if (result > 0) {
 
 				JDBCTemplate.commit(conn);
-				System.out.println("삭제 성공!");
 
 			} else {
 
 				JDBCTemplate.rollback(conn);
-				System.out.println("사용자 번호가 일치하는 User가 존재하지 않습니다.");
 			}
 
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			System.out.println("\n***삭제 중 오류 발생!***\n");
 
 		} finally {
-
+			
 			JDBCTemplate.close(conn);
 		}
 
@@ -149,14 +130,19 @@ public class UserService {
 
 	}
 
+	/** 6. ID, PW가 일치하는 회원이 있는지 조회(SELECT)
+	 * 6-1. 쌤이하신 풀이는 USER_NO로 조회한다.
+	 * @param user
+	 * @return
+	 */
 	public int updateName(User user) throws Exception{
-
-		Connection conn = null;
+		
+		
+		 Connection conn = JDBCTemplate.getConnection();
 		int result = 0;
 
 		try {
-
-			conn = JDBCTemplate.getConnection();
+			
 			result = dao.updateUser(conn, user);
 
 			if (result > 0) {
@@ -181,7 +167,84 @@ public class UserService {
 
 		}
 
-		return result;
+		return result; 
+		
+		// 6-1. USER_NO 로 조회할경우
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	}
+
+	/** 7. 아이디 중복 확인 서비스
+	 * @param userId
+	 * @return userId
+	 */
+	public int idCheck(String userId) throws Exception{
+		
+		Connection conn = JDBCTemplate.getConnection();
+		
+		int count = dao.idCheck(conn, userId);
+		
+		JDBCTemplate.close(conn);
+		
+		
+		return count;
+	}
+
+	/** 8. userList에 있는 모든 User 객체를 Insert 서비스
+	 * @param userList
+	 * @return
+	 */
+	public int multiInsertUser(List<User> userList) throws Exception{
+		
+		// 다중 INSERT 방법
+		// 1) SQL 을 이용한 다중 INSERT
+		// 2) Java 반복문을 이용한 다중 INSERT (이거 사용!)
+		
+		
+		Connection conn = JDBCTemplate.getConnection();
+		
+		int count = 0; // 삽입 성공한 행의 갯수 count
+		
+		for(User user : userList) {
+			int result = dao.insertUser(conn, user);
+			count += result; // 삽입 성공한 행의 갯수를 count 누적
+		}
+		
+		// count --; 롤백되는지 확인용
+		
+		// 전체 삽입 성공 시 commit/ 아니면 rollback(일부 삽입, 전체실패)
+		
+		if(count == userList.size()) {
+			JDBCTemplate.commit(conn);
+		} else {
+			JDBCTemplate.rollback(conn);
+		}
+		
+		JDBCTemplate.close(conn);
+		
+		
+		return count;
 	}
 
 }

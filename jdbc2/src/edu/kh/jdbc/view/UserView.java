@@ -1,5 +1,6 @@
 package edu.kh.jdbc.view;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -73,32 +74,154 @@ public class UserView {
 		
 	}
 
-	private void multiInsertUser() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void insertUser2() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/** 6. ID, PW가 일치하는 회원이 있을 경우 이름 수정
+	
+	/** 8. 여러 User 등록하기
 	 * 
+	 */
+	private void multiInsertUser() throws Exception{
+		
+		System.out.println("\n===8. 여러 User 등록===\n");
+		
+		System.out.print("등록할 User 수 : ");
+		int input = sc.nextInt();
+		sc.nextLine(); // 버퍼 개행문자 제거
+		
+		// 입력받은 회원 정보를 저장할 List 객체 생성
+		List<User> userList = new ArrayList<User>();
+		
+		for(int i = 0; i < input; i++) {
+			
+			String userId = null; // 입력된 아이드를 저장할 변수
+			
+			while(true) {
+				
+				System.out.print((i+1) + "번째 ID : ");
+				userId = sc.next();
+				
+				// 입력받은 userId가 중복인지 검사하는
+				// 서비스(SELECT) 호출 후 결과(int, 중복 == 1, 아니면 == 0) 반환 받기
+				int count = service.idCheck(userId);
+				
+				if(count == 0) { // 중복이 아닌경우
+					System.out.println("사용 가능한 아이디입니다");
+					break;
+				}
+				
+				System.out.println("이미 사용중인 아이디 입니다. 다시 입력하세요.");
+				
+			}
+			
+			// pw, name 입력 받기
+			System.out.print((i+1) + "번째 PW : ");
+			String userPw = sc.next();
+			
+			System.out.print((i+1) +"번째 Name : ");
+			String userName = sc.next();
+			
+			// 입력받은 값 3개를 한번에 묶어서 전달할 수 있도록
+			// User DTO 객체를 생성한 후 필드에 값 세팅
+			
+			User user = new User();
+			
+			user.setUserId(userId);
+			user.setUserPw(userPw);
+			user.setUserName(userName);
+			
+			// userList에 user 추가
+			userList.add(user);
+			
+		} // for 문 종료
+		
+		// 입력받은 모든 사용자를 insert 하는 서비스 호출
+		// -> 결과로 삽입된 행의 개수 반환
+		int result = service.multiInsertUser(userList);
+		
+		if(result == userList.size()) {
+			System.out.println("전체 삽입 성공!!");
+			
+		} else {
+			System.out.println("삽입 실패");
+			
+		}
+		
+	}
+
+	
+	/** 7. User 등록(아이디 중복 검사)
+	 * 
+	 */
+	private void insertUser2() throws Exception{
+		
+		System.out.println("\n===7. User 등록(아이디 중복 검사)===\n ");
+		
+		String userId = null; // 입력된 아이드를 저장할 변수
+		
+		while(true) {
+			
+			System.out.print("ID : ");
+			userId = sc.next();
+			
+			// 입력받은 userId가 중복인지 검사하는
+			// 서비스(SELECT) 호출 후 결과(int, 중복 == 1, 아니면 == 0) 반환 받기
+			int count = service.idCheck(userId);
+			
+			if(count == 0) { // 중복이 아닌경우
+				System.out.println("사용 가능한 아이디입니다");
+				break;
+			}
+			
+			System.out.println("이미 사용중인 아이디 입니다. 다시 입력하세요.");
+			
+		}
+		
+		// pw, name 입력 받기
+		System.out.print("PW : ");
+		String userPw = sc.next();
+		
+		System.out.print("Name : ");
+		String userName = sc.next();
+		
+		// 입력받은 값 3개를 한번에 묶어서 전달할 수 있도록
+		// User DTO 객체를 생성한 후 필드에 값 세팅
+		
+		User user = new User();
+		
+		user.setUserId(userId);
+		user.setUserPw(userPw);
+		user.setUserName(userName);
+		
+		// 서비스 호출 후 결과 반환 받기
+		// User 등록 서비스 이용하기
+		int result = service.insertUser(user);
+		
+		if(result > 0 ) {
+			System.out.println("\n" + userId + " 사용자가 등록되었습니다.\n");
+			
+		} else {
+			System.out.println("\n**n등록 실패**\n");
+	
+		}
+		
+	}
+
+	
+	/** 6. ID, PW가 일치하는 회원이 있을 경우 이름 수정
+	 *  6-1. 쌤이하신 풀이는 USER_NO로 했을 경우이다.
 	 */
 	private void updateName() throws Exception {
 		
-		System.out.println("\n===== 이름 수정 =====\n");
+		System.out.println("\n===6. ID, PW가 일치하는 회원이 있을 경우 이름 수정 ===\n");
 
-	    System.out.print("아이디 입력: ");
+	    System.out.print("ID : ");
 	    String userId = sc.next();
 
-	    System.out.print("비밀번호 입력: ");
+	    System.out.print("PW : ");
 	    String userPw = sc.next();
-
+	    
 	    System.out.print("수정할 이름 입력: ");
 	    String userName = sc.next();
 
+	   
 	    User user = new User();
 	    user.setUserId(userId);
 	    user.setUserPw(userPw);
@@ -108,15 +231,18 @@ public class UserView {
 
 	    if(result > 0) {
 	    
-	    	System.out.println("\n[이름이 성공적으로 수정되었습니다]\n");
+	    	System.out.println("\n[수정 성공!!!]\n");
 	    	
 	    } else {
 	    	
-	        System.out.println("\n[아이디 또는 비밀번호가 일치하는 회원이 없습니다]\n");
+	        System.out.println("\n[수정 실패!!!]\n");
 	    }
+	    
+	    
+	    
+	    
 	}
 		
-	
 
 	/** 5. USER_NO를 입력받아 일치하는 User 삭제
 	 *  * DNL 이다!!
@@ -126,23 +252,25 @@ public class UserView {
 	 * 
 	 */
 	private void deleteUser() throws Exception {
-		   System.out.print("삭제할 USER_NO를 입력하세요: ");
-		    int userNo = sc.nextInt();
+		
+		   System.out.print("삭제할 사용자 번호 입력 : ");
+		    int input = sc.nextInt();
 		    sc.nextLine(); 
 
-		    int result = service.deleteUser(userNo);
+		    int result = service.deleteUser(input);
 
-		    if (result > 0) {
+		    if (result > 0 ) { 
 		    	
-		        System.out.println("삭제 성공!");
-		        
+		    	System.out.println("삭제 성공!");
+		    	
 		    } else {
 		    	
-		        System.out.println("사용자 번호가 일치하는 User가 존재하지 않습니다.");
+		    	System.out.println("사용자 번호가 일치하는 User가 존재하지 않습니다.");
 		    }
 		
 	}
 
+	
 	/** 4.  USER_NO를 입력 받아 일치하는 User 조회
 	 * * 딱 1행만 조회되거나 or 일치하는 것 못찾았거나
 	 * 
@@ -151,7 +279,7 @@ public class UserView {
 	 */
 	private void selectUser() throws Exception{
 		
-		   System.out.print("조회할 USER_NO를 입력하세요: ");
+		   System.out.print("사용자 번호 입력 : ");
 		    int input = sc.nextInt();
 		    sc.nextLine(); 
 
@@ -159,19 +287,16 @@ public class UserView {
 
 		    if (user == null) {
 
-		        System.out.println("해당 USER_NO의 회원이 없습니다.");
-		    } else {
-		        System.out.println("\n===== 조회 결과 =====");
-		        System.out.println("번호: " + user.getUserNo());
-		        System.out.println("아이디: " + user.getUserId());
-		        System.out.println("비밀번호: " + user.getUserPw());
-		        System.out.println("이름: " + user.getUserName());
-		        System.out.println("가입일: " + user.getEnrollDate());
-		    }
-		
+		        System.out.println("USER_NO가 일치하는 회원이 없습니다.");
+		        return;
+		        
+		    } 
+		    	
+		     System.out.println(user);
 		
 	}
 
+	
 	/** 3. User 중 이름에 검색어가 포함된 회원 조회
 	 * 검색어 입력 : 유
 	 */
@@ -201,6 +326,7 @@ public class UserView {
 		
 	}
 
+	
 	/** 2. User 전체 조회 관련 View (SELECT)
 	 * 
 	 */
@@ -228,6 +354,7 @@ public class UserView {
 		
 	}
 
+	
 	/** 1. User 등록 관련된 View 
 	 * 
 	 */
