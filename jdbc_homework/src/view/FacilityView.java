@@ -25,7 +25,7 @@ public class FacilityView {
                 System.out.println("1. 시설 등록");
                 System.out.println("2. 전체 시설 조회");
                 System.out.println("3. 시설 삭제");
-                System.out.println("4. 시설 메뉴 조회"); // ✅ 추가
+                System.out.println("4. 시설 메뉴 조회"); 
                 System.out.println("0. 이전 메뉴로");
                 System.out.print("메뉴 선택 : ");
                 input = Integer.parseInt(sc.nextLine());
@@ -41,7 +41,7 @@ public class FacilityView {
                     deleteFacility();
                     break;
                 case 4:
-                    selectFacilityMenu(); // ✅ 추가
+                    selectFacilityMenu();
                     break;
                 case 0:
                     System.out.println("[이전 메뉴로]");
@@ -117,7 +117,7 @@ public class FacilityView {
         System.out.println("\n--- 시설 메뉴 조회 ---");
 
         System.out.print("시설 번호 입력 : ");
-        int facilityId = Integer.parseInt(sc.nextLine()); // ✅ 개선
+        int facilityId = Integer.parseInt(sc.nextLine());
 
         try {
             List<FacilityMenu> list = menuService.selectMenuByFacility(facilityId);
