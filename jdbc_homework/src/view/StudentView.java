@@ -68,7 +68,7 @@ public class StudentView {
         std.setMajor(major);
 
         int result = service.insertStudent(std);
-        System.out.println(result > 0 ? "등록 성공 ✅" : "등록 실패 ❌");
+        System.out.println(result > 0 ? "등록 성공 " : "등록 실패");
     }
 
     /** 2) 전체 조회 */
@@ -112,7 +112,7 @@ public class StudentView {
         std.setMajor(major);
 
         int result = service.updateStudent(std);
-        System.out.println(result > 0 ? "수정 성공 ✅" : "수정 실패 ❌");
+        System.out.println(result > 0 ? "수정 성공" : "수정 실패");
     }
 
     /** 4) 삭제 */
@@ -122,7 +122,7 @@ public class StudentView {
         int stdNo = Integer.parseInt(sc.nextLine());
 
         int result = service.deleteStudent(stdNo);
-        System.out.println(result > 0 ? "삭제 성공 ✅" : "삭제 실패 ❌");
+        System.out.println(result > 0 ? "삭제 성공" : "삭제 실패");
     }
 
     /** 5) 전공별 조회 */

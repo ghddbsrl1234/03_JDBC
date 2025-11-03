@@ -1,9 +1,7 @@
 package service;
 
-import static common.JDBCTEMPLATE.close;
-import static common.JDBCTEMPLATE.commit;
-import static common.JDBCTEMPLATE.getConnection;
-import static common.JDBCTEMPLATE.rollback;
+import static common.JDBCTEMPLATE.*;
+
 
 import java.sql.Connection;
 import java.util.List;
